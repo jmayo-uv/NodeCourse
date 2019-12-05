@@ -1,5 +1,5 @@
-
-var sumTwoAndTwo = function (){
+//Forma de crear una función
+const sumTwoAndTwo = function (){
     return 2+2;
 }
 
