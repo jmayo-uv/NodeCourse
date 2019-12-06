@@ -3,6 +3,9 @@ const app = express();
 //Esta variable de entorno se utilizará para cambiar el puerto si está siendo utilizado o no
 const port = process.env.port || 3003
 
+//Esta instrucción sirve para parsear en JSON con Express
+app.use(express.json());
+
 
 //Declarando un array de coches
 var coches =[
@@ -60,6 +63,45 @@ app.get('/api/cars/:company', (req, res) => {
         res.send(coche)
     }
 })
+
+app.post('/api/cars', (req, res) => {
+    //Asignación de ID para nuevos coches
+    var carID = coches.length;
+    var coche ={
+        id: carID,
+        //En el método GET NUNCA van los parámetros en el Body
+        company: req.body.company, //En este caso el valor va a venir en el Body
+        model: req.body.model,
+        year: req.body.year
+    }
+    
+    coches.push(coche); // Instrucción para agregar al final del arreglo el valor de coche
+    res.status(201).send(coche);
+    
+})
+
+app.post('/api/cars2', (req, res) => {
+    if(!req.body.company || req.body.company.length < 3 ){
+        res.status(400).send('Introduce empresa correcta')
+        return 
+    } else {
+    
+        //Asignación de ID para nuevos coches
+        var carID = coches.length;
+        var coche ={
+            id: carID,
+            //En el método GET NUNCA van los parámetros en el Body
+            company: req.body.company, //En este caso el valor va a venir en el Body
+            model: req.body.model,
+            year: req.body.year
+        }
+        
+        coches.push(coche); // Instrucción para agregar al final del arreglo el valor de coche
+        res.status(201).send(coche);
+    }
+
+})
+
 
 app.listen(port)
     console.log('Server Listening on 3003')
