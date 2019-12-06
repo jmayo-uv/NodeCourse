@@ -124,14 +124,53 @@ app.post('/api/cars3', [
         model: req.body.model,
         year: req.body.year
     }
+})
 
+app.put('/api/cars/:id', [
+    check('company').isLength({min: 3}),
+    check('model').isLength({min: 3})
+], (req, res) => {
+
+    //Valida con el nuevo paquete si hubo errores de validación, de ser así devuelve un status 422
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({errors: errors.array() });
+    }
+
+    //Búsqueda dentro del arreglo para ver si el ID del coche existe
+    const coche = coches.find(coche => coche.id === parseInt(req.params.id))
     
+    if(!coche){
+        res.status(404).send('El coche con ese ID no existe')
+        return
+    }
+
+    //Actualización de registro
+    coche.company = req.body.company
+    coche.model = req.body.model
+    coche.year = req.body.year
+
+    //Habitualmente se responde 204 cuando se hace un PUT segun MDN
+    res.status(204).send()
+
+})
+
+app.delete('/api/cars/:id', (req, res) => {
+
+    //Búsqueda dentro del arreglo para ver si el ID del coche existe
+    const coche = coches.find(coche => coche.id === parseInt(req.params.id))
     
-    coches.push(coche); // Instrucción para agregar al final del arreglo el valor de coche
-    res.status(201).send(coche);
-    
+    if(!coche){
+        res.status(404).send('El coche con ese ID no existe')
+        return
+    }
+
+    //Instrucciones para borrar coche
+    const index = coches.indexOf(coche)
+    coches.splice(index,1)
+    res.status(200).send('Coche borrado')
 })
 
 
-app.listen(port)
-    console.log('Server Listening on 3003')
+app.listen(port, ()=> 
+    console.log('Server Listening on '+ port))
