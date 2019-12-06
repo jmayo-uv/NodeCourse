@@ -3,6 +3,9 @@ const app = express();
 //Esta variable de entorno se utilizará para cambiar el puerto si está siendo utilizado o no
 const port = process.env.port || 3003
 
+//Constante para utilizar el paquete express-validator
+const { check, validationResult } = require('express-validator');
+
 //Esta instrucción sirve para parsear en JSON con Express
 app.use(express.json());
 
@@ -100,6 +103,33 @@ app.post('/api/cars2', (req, res) => {
         res.status(201).send(coche);
     }
 
+})
+
+app.post('/api/cars3', [
+    check('company').isLength({min: 3}),
+    check('model').isLength({min: 3})
+], (req, res) => {
+
+    //Valida con el nuevo paquete si hubo errores de validación, de ser así devuelve un status 422
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({errors: errors.array() });
+    }
+    //Asignación de ID para nuevos coches
+    var carID = coches.length;
+    var coche ={
+        id: carID,
+        //En el método GET NUNCA van los parámetros en el Body
+        company: req.body.company, //En este caso el valor va a venir en el Body
+        model: req.body.model,
+        year: req.body.year
+    }
+
+    
+    
+    coches.push(coche); // Instrucción para agregar al final del arreglo el valor de coche
+    res.status(201).send(coche);
+    
 })
 
 
