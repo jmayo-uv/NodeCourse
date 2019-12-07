@@ -6,6 +6,26 @@ const port = process.env.port || 3003
 //Constante para utilizar el paquete express-validator
 const { check, validationResult } = require('express-validator');
 
+//Instrucción para ejecutar un middleware, esta viene incluida en express y lo que hace es transformarlo en json
+app.use(express.json())
+
+//un middleware tiene acceso a request, response y next
+app.use(function (req, res, next){
+    console.log('Time: ', Date.now())
+    next()
+})
+
+app.use(function (req, res, next){
+    console.log('Request Type: ', req.method)
+    next()
+})
+
+//Se puede especificar que solamente se verifique el middleware si se accede a cierta ruta
+app.use('/api/login', function (req, res, next) {
+    console.log('Checking Login...')
+    next()
+})
+
 //Esta instrucción sirve para parsear en JSON con Express
 app.use(express.json());
 
