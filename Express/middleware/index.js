@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+//Requerir el middleware de express
+var morgan = require('morgan')
+
 //Se importa el modulo date, en el cual se encuentra el middleware para ver la hora
 const date = require('./date')
 
@@ -10,13 +13,15 @@ const port = process.env.port || 3003
 //Instrucción para ejecutar un middleware, esta viene incluida en express y lo que hace es transformarlo en json
 app.use(express.json())
 
+app.use(morgan('tiny'))
 
-app.use(date)
 
-app.use('/api/date', (req, res, next) => {
-    console.log('Request type: ', req.method)
-    next()
-})
+//app.use(date)
+
+// app.use('/api/date', (req, res, next) => {
+//     console.log('Request type: ', req.method)
+//     next()
+// })
 
 
 app.get('/api/date', (req, res)=>{
